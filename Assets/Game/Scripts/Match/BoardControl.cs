@@ -1,95 +1,138 @@
+﻿using Scripts.Models;
 using Scripts.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BoardControl : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject slateSample;
-    [SerializeField]
-    private GameObject player1Pawn;
-    [SerializeField]
-    private GameObject player2Pawn;
+	[SerializeField]
+	private GameObject SlateSample;
 
-    private GameObject[] slateGameObjects;
+	[SerializeField]
+	private GameObject MyPawnSample;
 
-    void Start()
+	[SerializeField]
+	private GameObject HisPawnSample;
+
+	[SerializeField]
+	private TMPro.TextMeshProUGUI TurnText;
+
+	[SerializeField]
+	private GameObject winPanel;
+
+	[SerializeField]
+	private TMPro.TextMeshProUGUI winText;
+
+	private bool MyTurn = false;
+
+	private GameObject[] SlateGameObjects;
+
+	// Start is called before the first frame update
+	void Start()
     {
-        Vector3[] positions = new Vector3[]
-        {
-        new Vector3(-1.0f,1.0f),
-        new Vector3(0f,1.0f),
-        new Vector3(1.0f,1.0f),
+		winPanel.SetActive(false);
 
-        new Vector3(-1.0f,0.0f),
-        new Vector3(0f,0.0f),
-        new Vector3(1.0f,0.0f),
+		if (winPanel == null) {
+			throw new Exception("missing win panel!");
+		}
+		if (winText == null) {
+			throw new Exception("missing win text!");
+		}
 
-        new Vector3(-1.0f,-1.0f),
-        new Vector3(0f,-1.0f),
-        new Vector3(1.0f,-1.0f),
-        };
+		Vector3[] positions = new Vector3[] {
+			new Vector3(-1.0f, 1.0f),
+			new Vector3(0f, 1.0f),
+			new Vector3(1.0f, 1.0f),
 
-        slateGameObjects = new GameObject[9];
+			new Vector3(-1.0f, 0.0f),
+			new Vector3(0f, 0.0f),
+			new Vector3(1.0f, 0.0f),
 
-        for (int i = 0; i < 9; i++)
-        {
-            GameObject slate = Instantiate(slateSample);
+			new Vector3(-1.0f, -1.0f),
+			new Vector3(0f, -1.0f),
+			new Vector3(1.0f, -1.0f),
+		};
 
-            slateGameObjects[i] = slate;
+		SlateGameObjects = new GameObject[9];
 
-            slate.transform.parent = gameObject.transform;
-            slate.transform.position = positions[i];
-            BoardSlateControl slateControl = slate.GetComponent<BoardSlateControl>();
-            if (slateControl)
-            {
-                slateControl.index = (ushort)i;
-            }
-        }
 
-        MatchModel.currentMatch.OnBoardChange.AddListener(OnBoardChanged);
-        
+		for (int i = 0; i < 9; i++) {
+			GameObject slate = Instantiate(SlateSample);
 
-    }
-    private ushort SlateIndex;
-    private MatchModel.SlateStatus SlateStatus = MatchModel.SlateStatus.NONE;
-    private void OnBoardChanged(ushort slateIndex, MatchModel.SlateStatus slateStatus)
-    {
-        Debug.Log("board changed " + slateIndex + " changed to " + slateStatus);
+			SlateGameObjects[i] = slate;
 
-        SlateIndex = slateIndex;
-        SlateStatus = slateStatus;
+			slate.transform.parent = gameObject.transform;
+			slate.transform.position = positions[i];
+			BoardSlateControl slateCon = slate.GetComponent<BoardSlateControl>();
+			if (slateCon != null) {
+				slateCon.Index = (ushort)i;
+			}
+		}
 
-        
+		MatchModel.CurrentMatch.OnBoardChange.AddListener(OnBoardChanged);
+		SetPlayerTurn(MatchModel.CurrentMatch.CurrentPlayerClientID == NetworkingManager.Instacne.ClientID);
     }
 
-    public void SlateCliked(ushort slateIndex)
-    {
-        MatchModel.currentMatch.ReportSlateTaken(slateIndex);
-    }
+	private ushort SlateIndex;
+	private MatchModel.SlateStatus SlateStatus = MatchModel.SlateStatus.NONE;
 
-    private void Update()
-    {
-        if (SlateStatus != MatchModel.SlateStatus.NONE)
-        {
-            GameObject pawn;
-            if (SlateStatus == MatchModel.SlateStatus.MINE)
-            {
-                pawn = Instantiate(player1Pawn);
-            }
-            else
-            {
-                pawn = Instantiate(player2Pawn);
-            }
+	private void OnBoardChanged(ushort slateIndex, MatchModel.SlateStatus slateStatus) {
+		Debug.Log("board changed " + slateIndex + " changed to " + slateStatus);
 
-            GameObject slate = slateGameObjects[SlateIndex];
-            pawn.transform.parent = slate.transform;
-            pawn.transform.localPosition = new Vector3(0f,0f,0.8f);
+		SlateIndex = slateIndex;
+		SlateStatus = slateStatus;
+	}
 
-            SlateStatus = MatchModel.SlateStatus.NONE;
-        }
-        
-    }
+	public void SlateClicked(ushort slateIndex) {
+		if (MyTurn && MatchModel.CurrentMatch.IsSlateAvailable(slateIndex)) {
+			MatchModel.CurrentMatch.ReportSlateTaken(slateIndex);
+		}
+	}
+
+	void Update() {
+
+		if (SlateStatus != MatchModel.SlateStatus.NONE) {
+			GameObject pawnGO;
+			if (SlateStatus == MatchModel.SlateStatus.MINE) {
+				// my pawn
+				pawnGO = Instantiate(MyPawnSample);
+			} else {
+				// his pawn
+				pawnGO = Instantiate(HisPawnSample);
+			}
+
+			GameObject slate = SlateGameObjects[SlateIndex];
+			pawnGO.transform.parent = slate.transform;
+			pawnGO.transform.localPosition = new Vector3(0.0f,0.0f,0.8f);
+
+			SlateStatus = MatchModel.SlateStatus.NONE;
+
+			Debug.Log("current turn is: " + MatchModel.CurrentMatch.CurrentPlayerClientID + " i'm: " + NetworkingManager.Instacne.ClientID);
+
+			SetPlayerTurn(MatchModel.CurrentMatch.CurrentPlayerClientID == NetworkingManager.Instacne.ClientID);
+
+			if (MatchModel.CurrentMatch.Win) {
+				// match ended, we have a winner
+				winPanel.SetActive(true);
+				winText.text = MatchModel.CurrentMatch.IWin ? "I WON!" : "I'm a loser!";
+			} else if (MatchModel.CurrentMatch.Draw){
+				winPanel.SetActive(true);
+				winText.text = "we both are losers";
+			}
+		}
+	}
+
+	private void SetPlayerTurn(bool myTurn) {
+		MyTurn = myTurn;
+		TurnText.text = myTurn ? "my turn" : "his turn";
+	}
+
+	public void Replay() {
+		MatchModel.CurrentMatch = null;
+		NetworkingManager.Instacne.Disconnect();
+		SceneManager.LoadScene("IntroScene");
+	}
 }

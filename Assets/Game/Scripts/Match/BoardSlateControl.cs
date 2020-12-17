@@ -1,27 +1,31 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BoardSlateControl : MonoBehaviour
 {
-    public ushort index;
+	public ushort Index;
+
+    // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    private void OnMouseDown()
+    // Update is called once per frame
+    void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            if(transform.parent != null)
-            {
-                BoardControl board = transform.parent.gameObject.GetComponent<BoardControl>();
-                if (board)
-                {
-                    board.SlateCliked(index);
-                }
-            }
-        }
+        
     }
+
+	private void OnMouseDown() {
+		if (Input.GetMouseButtonDown(0)) {
+			if (transform.parent != null) {
+				BoardControl board = transform.parent.gameObject.GetComponent<BoardControl>();
+				if (board != null) {
+					board.SlateClicked(Index);
+				}
+			}
+		}
+	}
 }
