@@ -121,6 +121,21 @@ namespace Scripts.Networking
 
                     GotMatch = true;
                     break;
+
+                case Tags.Tag.SERVER_CONFIRM_SLATE_TAKEN:
+                    using(Message msg = e.GetMessage())
+                    {
+                        using(DarkRiftReader reader = msg.GetReader())
+                        {
+                            ushort slateIndex = reader.ReadUInt16();
+                            ushort clientID = reader.ReadUInt16();
+
+                            MatchModel.currentMatch.ServerReportSlateTaken(slateIndex, clientID == client.ID);
+                        }
+                    }
+
+                    
+                    break;
             }
         }
 

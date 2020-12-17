@@ -10,7 +10,8 @@ namespace Scripts.Networking
         {
             SET_NAME,
             GOT_MATCH,
-            SLATE_TAKEN
+            SLATE_TAKEN,
+            SERVER_CONFIRM_SLATE_TAKEN
         }
     }
 }

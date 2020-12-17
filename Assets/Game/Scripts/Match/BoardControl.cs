@@ -1,4 +1,5 @@
 using Scripts.Networking;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,6 +37,15 @@ public class BoardControl : MonoBehaviour
                 slateControl.index = (ushort)i;
             }
         }
+
+        MatchModel.currentMatch.OnBoardChange.AddListener(OnBoardChanged);
+        
+
+    }
+
+    private void OnBoardChanged(ushort slateIndex, MatchModel.SlateStatus slateStatus)
+    {
+        Debug.Log("board changed " + slateIndex + " changed to " + slateStatus);
     }
 
     public void SlateCliked(ushort slateIndex)
