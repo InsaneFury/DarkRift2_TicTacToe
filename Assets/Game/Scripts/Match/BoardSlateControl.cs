@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BoardSlateControl : MonoBehaviour
 {
-    public int index;
+    public ushort index;
     void Start()
     {
         

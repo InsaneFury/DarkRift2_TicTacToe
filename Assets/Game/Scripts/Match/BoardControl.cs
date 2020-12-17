@@ -1,3 +1,4 @@
+using Scripts.Networking;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,13 +33,13 @@ public class BoardControl : MonoBehaviour
             BoardSlateControl slateControl = slate.GetComponent<BoardSlateControl>();
             if (slateControl)
             {
-                slateControl.index = i;
+                slateControl.index = (ushort)i;
             }
         }
     }
 
-    public void SlateCliked(int slateIndex)
+    public void SlateCliked(ushort slateIndex)
     {
-        Debug.Log("slate clicked " + slateIndex);
+        MatchModel.currentMatch.ReportSlateTaken(slateIndex);
     }
 }

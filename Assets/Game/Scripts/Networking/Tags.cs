@@ -9,7 +9,8 @@ namespace Scripts.Networking
         public enum Tag
         {
             SET_NAME,
-            GOT_MATCH
+            GOT_MATCH,
+            SLATE_TAKEN
         }
     }
 }

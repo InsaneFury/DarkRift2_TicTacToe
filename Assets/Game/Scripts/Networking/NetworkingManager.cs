@@ -69,25 +69,6 @@ namespace Scripts.Networking
             return false;
         }
 
-        private void OnMessageReceived(object sender, MessageReceivedEventArgs e)
-        {
-            switch ((Tags.Tag)e.Tag)
-            {
-                case Tags.Tag.GOT_MATCH:
-                    //TODO: start a new match - move the match scene
-                    using (Message msg = e.GetMessage()) 
-                    {
-                        using(DarkRiftReader reader = msg.GetReader())
-                        {
-                            ushort matchID = reader.ReadUInt16();
-                            MatchModel.currentMatch = new MatchModel(matchID);
-                            Debug.Log(MatchModel.currentMatch.id);
-                        }
-                    }
-                    break;
-            }
-        }
-
         public void MessageNameToServer(string name)
         {
             if (IsConnected)
@@ -104,8 +85,38 @@ namespace Scripts.Networking
             }
         }
 
+        public void MessageSlateTaken(ushort slateIndex,ushort matchID)
+        {
+            using(DarkRiftWriter writer = DarkRiftWriter.Create())
+            {
+                writer.Write(matchID);
+                writer.Write(slateIndex);
+                using(Message message = Message.Create((ushort)Tags.Tag.SLATE_TAKEN, writer))
+                {
+                    client.SendMessage(message, SendMode.Reliable);
+                }
+            }
+        }
 
-
+        // GETTING MESSAGES FROM SERVER
+        private void OnMessageReceived(object sender, MessageReceivedEventArgs e)
+        {
+            switch ((Tags.Tag)e.Tag)
+            {
+                case Tags.Tag.GOT_MATCH:
+                    //TODO: start a new match - move the match scene
+                    using (Message msg = e.GetMessage())
+                    {
+                        using (DarkRiftReader reader = msg.GetReader())
+                        {
+                            ushort matchID = reader.ReadUInt16();
+                            MatchModel.currentMatch = new MatchModel(matchID);
+                            Debug.Log(MatchModel.currentMatch.id);
+                        }
+                    }
+                    break;
+            }
+        }
 
 
 

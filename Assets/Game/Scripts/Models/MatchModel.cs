@@ -14,5 +14,10 @@ namespace Scripts.Networking
         {
             id = _id;
         }       
+
+        public void ReportSlateTaken(ushort slateIndex)
+        {
+            NetworkingManager.Instance.MessageSlateTaken(slateIndex, id);
+        }
     }
 }
