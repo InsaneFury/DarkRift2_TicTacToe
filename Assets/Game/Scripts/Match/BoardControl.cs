@@ -29,11 +29,16 @@ public class BoardControl : MonoBehaviour
             GameObject slate = Instantiate(slateSample);
             slate.transform.parent = gameObject.transform;
             slate.transform.position = positions[i];
+            BoardSlateControl slateControl = slate.GetComponent<BoardSlateControl>();
+            if (slateControl)
+            {
+                slateControl.index = i;
+            }
         }
     }
 
-    void Update()
+    public void SlateCliked(int slateIndex)
     {
-        
+        Debug.Log("slate clicked " + slateIndex);
     }
 }
