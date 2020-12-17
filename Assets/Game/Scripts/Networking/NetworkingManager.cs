@@ -14,7 +14,7 @@ namespace Scripts.Networking {
 
 		private DarkRiftClient client;
 
-		public static NetworkingManager Instacne {
+		public static NetworkingManager Instance {
 			get {
 				if (instance == null) {
 					instance = new NetworkingManager();

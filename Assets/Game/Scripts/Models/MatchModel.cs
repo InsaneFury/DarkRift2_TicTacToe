@@ -41,7 +41,7 @@ namespace Scripts.Models {
 		}
 
 		public void ReportSlateTaken(ushort slateIndex) {
-			NetworkingManager.Instacne.MessageSlateTaken(slateIndex, Id);
+			NetworkingManager.Instance.MessageSlateTaken(slateIndex, Id);
 		}
 
 		public void ServerReportSlateTaken(ushort slateIndex, bool myMove, byte gameState, ushort winnerClientID) {
@@ -50,14 +50,14 @@ namespace Scripts.Models {
 			}
 
 			if (myMove) {
-				CurrentPlayerClientID = (ushort)(NetworkingManager.Instacne.ClientID == 0 ? 1 : 0);
+				CurrentPlayerClientID = (ushort)(NetworkingManager.Instance.ClientID == 0 ? 1 : 0);
 			} else {
-				CurrentPlayerClientID = NetworkingManager.Instacne.ClientID;
+				CurrentPlayerClientID = NetworkingManager.Instance.ClientID;
 			}
 
 			win = gameState == 1;
 			draw = gameState == 2;
-			iWin = winnerClientID == NetworkingManager.Instacne.ClientID;
+			iWin = winnerClientID == NetworkingManager.Instance.ClientID;
 
 			if (slates[slateIndex] == SlateStatus.NONE) {
 				slates[slateIndex] = myMove ? SlateStatus.MINE : SlateStatus.HIS;

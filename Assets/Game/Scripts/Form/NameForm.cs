@@ -23,7 +23,7 @@ public class NameForm : MonoBehaviour
 	//SceneManager.LoadScene("MatchScene");
 
 	private void Update() {
-		if (LoadingScene == false && NetworkingManager.Instacne.GotMatch) {
+		if (LoadingScene == false && NetworkingManager.Instance.GotMatch) {
 			LoadingScene = true;
 			SceneManager.LoadScene("Match");
 		}
@@ -41,9 +41,9 @@ public class NameForm : MonoBehaviour
 			return;
 		}
 
-		if (NetworkingManager.Instacne.ConnectionState == DarkRift.ConnectionState.Connected || NetworkingManager.Instacne.Connect()) {
+		if (NetworkingManager.Instance.ConnectionState == DarkRift.ConnectionState.Connected || NetworkingManager.Instance.Connect()) {
 			IsSubmiting = true;
-			NetworkingManager.Instacne.MessageNameToServer(name);
+			NetworkingManager.Instance.MessageNameToServer(name);
 		}
 
 	}

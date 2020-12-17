@@ -73,7 +73,7 @@ public class BoardControl : MonoBehaviour
 		}
 
 		MatchModel.CurrentMatch.OnBoardChange.AddListener(OnBoardChanged);
-		SetPlayerTurn(MatchModel.CurrentMatch.CurrentPlayerClientID == NetworkingManager.Instacne.ClientID);
+		SetPlayerTurn(MatchModel.CurrentMatch.CurrentPlayerClientID == NetworkingManager.Instance.ClientID);
     }
 
 	private ushort SlateIndex;
@@ -110,9 +110,9 @@ public class BoardControl : MonoBehaviour
 
 			SlateStatus = MatchModel.SlateStatus.NONE;
 
-			Debug.Log("current turn is: " + MatchModel.CurrentMatch.CurrentPlayerClientID + " i'm: " + NetworkingManager.Instacne.ClientID);
+			Debug.Log("current turn is: " + MatchModel.CurrentMatch.CurrentPlayerClientID + " i'm: " + NetworkingManager.Instance.ClientID);
 
-			SetPlayerTurn(MatchModel.CurrentMatch.CurrentPlayerClientID == NetworkingManager.Instacne.ClientID);
+			SetPlayerTurn(MatchModel.CurrentMatch.CurrentPlayerClientID == NetworkingManager.Instance.ClientID);
 
 			if (MatchModel.CurrentMatch.Win) {
 				// match ended, we have a winner
@@ -132,7 +132,7 @@ public class BoardControl : MonoBehaviour
 
 	public void Replay() {
 		MatchModel.CurrentMatch = null;
-		NetworkingManager.Instacne.Disconnect();
-		SceneManager.LoadScene("IntroScene");
+		NetworkingManager.Instance.Disconnect();
+		SceneManager.LoadScene("Intro");
 	}
 }
