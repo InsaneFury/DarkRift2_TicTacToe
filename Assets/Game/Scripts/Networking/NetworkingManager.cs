@@ -5,6 +5,7 @@ using DarkRift.Client;
 using System.Net;
 using System;
 using DarkRift;
+using UnityEngine.SceneManagement;
 
 namespace Scripts.Networking
 {
@@ -12,6 +13,7 @@ namespace Scripts.Networking
     {
         private static NetworkingManager instance;
         private DarkRiftClient client;
+        public bool GotMatch = false;
         public static NetworkingManager Instance
         {
             get
@@ -112,8 +114,12 @@ namespace Scripts.Networking
                             ushort matchID = reader.ReadUInt16();
                             MatchModel.currentMatch = new MatchModel(matchID);
                             Debug.Log(MatchModel.currentMatch.id);
+
+                            
                         }
                     }
+
+                    GotMatch = true;
                     break;
             }
         }
