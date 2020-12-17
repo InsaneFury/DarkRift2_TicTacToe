@@ -343,3 +343,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slateSample: {fileID: 3968632192180623090, guid: cc1c7b9807dbb404d9e394e3ceb0b6a2, type: 3}
+  player1Pawn: {fileID: 5676250038650112269, guid: b497e1675b78b1448ac43fb6d43a3bb4, type: 3}
+  player2Pawn: {fileID: 4281522092688863875, guid: a0eb2494ba10cf34f8f82a0acff7c0d1, type: 3}
