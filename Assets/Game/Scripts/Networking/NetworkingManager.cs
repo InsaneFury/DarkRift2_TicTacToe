@@ -59,6 +59,7 @@ namespace Scripts.Networking
             try
             {
                 client.Connect(IPAddress.Parse("127.0.0.1"), 4296, false);
+                client.MessageReceived += OnMessageReceived;
             }
             catch (Exception)
             {
@@ -67,6 +68,26 @@ namespace Scripts.Networking
             }
             return false;
         }
+
+        private void OnMessageReceived(object sender, MessageReceivedEventArgs e)
+        {
+            switch ((Tags.Tag)e.Tag)
+            {
+                case Tags.Tag.GOT_MATCH:
+                    //TODO: start a new match - move the match scene
+                    using (Message msg = e.GetMessage()) 
+                    {
+                        using(DarkRiftReader reader = msg.GetReader())
+                        {
+                            ushort matchID = reader.ReadUInt16();
+                            MatchModel.currentMatch = new MatchModel(matchID);
+                            Debug.Log(MatchModel.currentMatch.id);
+                        }
+                    }
+                    break;
+            }
+        }
+
         public void MessageNameToServer(string name)
         {
             if (IsConnected)
