@@ -12,15 +12,12 @@ public class NameForm : MonoBehaviour
 	private bool IsSubmiting = false;
 	private bool LoadingScene = false;
 
-    // Start is called before the first frame update
     void Start()
     {
         if (InputField == null) {
 			throw new System.Exception("missing input field");
 		}
     }
-
-	//SceneManager.LoadScene("MatchScene");
 
 	private void Update() {
 		if (LoadingScene == false && NetworkingManager.Instance.GotMatch) {
